@@ -509,6 +509,121 @@ Create S3 bucket
   * S3 bucket with the name: `s3://cec-<AWS account ID>-j2`
 </details>  
   
+Put the **launch script** used as **User data** in the previous section into the created bucket
+  | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-an-object-bucket.html)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Use AWS CLI 
+    | [text](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)
+  * Put the launch script into `user-data` folder in the created bucket
+* **What we have as a result (to check/validate)**
+  * File on S3 bucket: `s3://cec-<AWS account ID>-j2/user-data/<ubuntu launch script>`
+</details>  
+  
+Create Ubuntu EC2 instance repeating the steps in the previous section using AWS CLI, but with the following modifications
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Changes in EC2 instance settings
+    * Instance tag key-value: Name: `ubuntu-ud2`
+    * Use **instance profile** (the created above): `EC2toS3FullAccessProfile`
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+  * Use **User data** to perform the following operations
+    * Install AWS CLI version 2 on the EC2 instance
+      | [text](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+    * Download launch script from the created above S3 bucket
+      | [text](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html)(*)
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/cp.html)(*)
+      * Make this step independent on the AWS account — determine S3 bucket name dynamically by requesting **AWS account ID** using AWS CLI command 
+    * Initialize the instance by running the downloaded launch script as `root`
+* **What we have as a result (to check/validate)**
+  * **Running** Ubuntu EC2 instance (`ubuntu-ud2`) in `eu-central-1` region
+</details>  
+  
+Stop the created EC2 instance
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Use AWS CLI
+* **What we have as a result (to check/validate)**
+  * **Stopped** Ubuntu EC2 instance (`ubuntu-ud2`) in `eu-central-1` region
+</details>  
+  
+Create **launch script** similar to the one created for Ubuntu in the previous section but for Amazon Linux 2 and put it to the same bucket/folder as in the previous section 
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * File on S3 bucket: `s3://cec-<AWS account ID>-j2/user-data/<al2 launch script>`
+</details>  
+  
+Create Amazon Linux 2 EC2 instance repeating the steps in the previous section for Ubuntu using AWS CLI, but with the following modifications
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Changes in EC2 instance settings
+    * Instance tag key-value: `Name: al2-ud2`
+    * AMI ID: `ami-07df274a488ca9195`
+  * Changes in configurations performed by the **User data**
+    * To initialize the instance download from the S3 bucket (and run) the created above **launch script** for Amazon Linux 2  
+* **What we have as a result (to check/validate)**
+  * **Running** Amazon Linux 2 EC2 instance (`al2-ud2`) in `eu-central-1` region
+</details>  
+  
+Stop the created EC2 instance
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+* **What we have as a result (to check/validate)**
+  * **Stopped** Amazon Linux 2 EC2 instance (`al2-ud2`) in `eu-central-1` region
+</details>  
+  
+Start (just before the check) both the created above (and now stopped) Ubuntu and Amazon Linux 2 instances (`ubuntu-ud2, al2-ud2`) and provide their public IP addresses (or DNS names) 
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (03): please, **stop here** to check the results of your work before moving on
+</details>  
+  
+Terminate both the created above Ubuntu instances (`al2-ud2, ubuntu-ud2`)
+  | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/terminate-instances.html)(*)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
+  
+Create local shell script create.sh which creates two EC2 instances repeating the steps in the previous sections, but with the following modifications
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use the procedure to deterimine the latest version of AMI IDs for the requested OS type with help of `aws ssm get-parameters` command
+    | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)
+    * 1-st instance
+      * OS type: `Ubuntu 20.04`
+        | [text](https://discourse.ubuntu.com/t/finding-ubuntu-images-with-the-aws-ssm-parameter-store/15507)
+    * 2-nd instance
+      * OS type: Amazon Linux 2
+        | [text](https://aws.amazon.com/ru/blogs/compute/query-for-the-latest-amazon-linux-ami-ids-using-aws-systems-manager-parameter-store/)
+  * Both instances should use the same **User data** to perform the following operations 
+    * Determine OS type of the instance being configured and install appropriate AWS CLI of version 2
+      * It is possible to use the /etc/os-release file both in AL2 and Ubuntu to determine the OS type
+    * Download the created in the previous section **launch script** (appropriate for the OS) from corresponding S3 bucket to initialize and configure the instance
+      * Initialize the instance by running the downloaded **launch script** as `root`
+  * Initialize the instance by running the downloaded **launch script** as `root`
+  * Instances should have the following tags corresponding to their OS types
+    * 1-st instance
+      * Instance tag key-value: `Name: ubuntu-ud3`
+    * 2-nd instance
+      * Instance tag key-value: `Name: al2-ud3`
+  * Both instances shoud additionally be tagged with key-value: `Type: cec`
+* **What we have as a result (to check/validate)**
+  * Shell script `create.sh`
+</details>  
   
   
   
