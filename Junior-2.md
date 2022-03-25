@@ -366,10 +366,159 @@ Stop the created EC2 instance
 Start (just before the check) the created above (and now stopped) Amazon Linux 2 and Ubuntu instances and provide their public **IP addresses** (or DNS names) 
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
 <details><summary>Show details</summary>
- 
+  
 * **What we have as a result (to check/validate)**
   * **Checkpoint**(01): please, **stop here** to check the results of your work before moving on
 </details>  
+  
+Terminate the created above Amazon Linux 2 and Ubuntu instances
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
+  
+Сreate Ubuntu EC2 instance repeating the steps in the previous section, but using **AWS CLI**
+<details><summary>Show details</summary>
+ 
+* **Details**
+  * Use **AWS CLI**
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following custom EC2 instance settings 
+    | [text](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-ec2-instances.html) 
+    * Platform: `EC2-VPC`
+      * Note: In this course we work only with `EC2-VPC`, and never with `EC2-Classic`
+    * AMI ID: `ami-05f7491af5eef733a`
+    * Instance type: `t2.micro`
+    * Key pair name: `student-ed25519`
+    * **Security group ID**: ID of `public-ssh-http-81` security group
+      * Use the following command to find out **security group ID** (by known `<group name>)`
+      *  aws ec2 describe-security-groups --group-names <group_name> --query 'SecurityGroups[*].GroupId' --output text
+         | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-vpcs.html)
+    * **Subnet ID**: ID of any one of the subnets in the `default` VPC
+      * Use the following command to find out **VPC ID** of the `default` VPC
+      *  aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" --query "Vpcs[*].VpcId" --output text
+         | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-vpcs.html)
+      * Use the following command to find out **VPC subnets' IDs** (by known `<VPC ID>`)
+      *  aws ec2 describe-subnets --filters "Name=vpc-id,Values=<VPC ID>" --query "Subnets[*].SubnetId" --output text
+         | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-subnets.html)
+    * Instance tag key-value: `Name: ubuntu-cli`
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html)
+  * Repeat all the configuration steps from the previous section for the following components
+    * sshd daemon
+    * nginx daemon
+    * tutor-a user
+* **What we have as a result (to check/validate)**
+  * **Running** Ubuntu EC2 instance (`ubuntu-cli`) in `eu-central-1` region
+</details>    
+
+Stop the created EC2 instance
+<details><summary>Show details</summary>
+     
+* **Details**
+  * Use **AWS CLI**
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/stop-instances.html) 
+    * Use the following command to find out `ubuntu-cli` **instance ID**
+      * `aws ec2 describe-instances --filters "Name=tag:Name,Values=ubuntu-cli" --query "Reservations[].Instances[].InstanceId" --output text`
+* **What we have as a result (to check/validate)**
+  * **Stopped** Ubuntu EC2 instance (`ubuntu-cli`) in `eu-central-1` region
+</details>  
+  
+Create (one more) Ubuntu EC2 instance repeating the steps in the previous section, but using **User data**
+<details><summary>Show details</summary>
+     
+* **Details**
+  * Use **AWS CLI**
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the same EC2 instance settings as in the previos section (see above) with only the following modifications
+    * Instance tag key-value: `Name: ubuntu-ud1`
+  * Setup the following components the same way as in the previous section but using only **User data** to configure the instance by scripts during launch
+    | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html) 
+    * sshd daemon
+    * nginx daemon
+    * tutor-a user
+* **What we have as a result (to check/validate)**
+  * **Running** Ubuntu EC2 instance (`ubuntu-ud1`) in `eu-central-1` region
+</details>  
+  
+Stop the created EC2 instance
+<details><summary>Show details</summary>
+     
+* **Details**
+  * Use **AWS CLI**
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/stop-instances.html)(*)
+* **What we have as a result (to check/validate)**
+  * **Stopped** Ubuntu EC2 instance (`ubuntu-ud1`) in `eu-central-1` region
+</details>  
+  
+Start (just before the check) both the created above (and now stopped) Ubuntu instances (`ubuntu-cli, ubuntu-ud1`) and provide their public IP addresses (or DNS names) 
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
+<details><summary>Show details</summary>
+     
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (02): please, **stop here** to check the results of your work before moving on
+</details>  
+  
+Terminate both the created above Ubuntu instances (`ubuntu-cli, ubuntu-ud1`)
+  | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/terminate-instances.html)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Use AWS CLI 
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
+  
+Create IAM role and EC2 **instance profile** to grant applications running on the instance (which will be created below) full access permissions to Amazon S3 service (within AWS account)
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Use AWS CLI 
+  * Use the following settings 
+    * Role name: `EC2toS3FullAccess`
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-role.html)
+    * Role description: `Allow EC2 to do everything with any S3 buckets`
+    * Inline access policy name: `S3FullAccess`
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/put-role-policy.html)
+    * **Instance profile** name: `EC2toS3FullAccessProfile`
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-instance-profile.html)
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/add-role-to-instance-profile.html)
+* **What we have as a result (to check/validate)**
+  * Instance profile `EC2toS3FullAccessProfile` with the corresponding permissions
+</details>  
+  
+Create S3 bucket
+  | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Use AWS CLI 
+    | [text](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html)
+  * Use the following S3 bucket settings 
+    * Bucket name: `cec-<AWS account ID>-j2`
+      | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)
+      * Use the following command to find out `<AWS account ID>`
+      *  aws sts get-caller-identity --query Account --output text
+    * AWS Region: `EU (Frankfurt) eu-central-1`
+    * **All other settings**: default
+* **What we have as a result (to check/validate)**
+  * S3 bucket with the name: `s3://cec-<AWS account ID>-j2`
+</details>  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
