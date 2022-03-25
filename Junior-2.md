@@ -123,23 +123,255 @@ Stop the created instance
 </details> 
 
 Start the EC2 instance stopped in the previous section and connect to it via SSH as **default user**
- | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)(*)
 <details><summary>Show details</summary>
 
 * **Details**
   * To start instance use AWS Console
+  * Install `nginx` package on the EC2 Instance (remotely via SSH) and configure `http` access to it
+  * Install `nginx` software package by repeating the same step for `nginx` package as for installing `fail2ban` utility in the previous section 
+    * Update the EC2 instance software (all packages)
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-updates.html)(*)
+    * Make sure EPEL repository is added
+      | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/ec2-enable-epel/)(*)
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/add-repositories.html)(*) 
+    * Find `nginx` software package
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/find-software.html)(*) 
+    * Install `nginx` software package
+      | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-software.html)(*)
+    * Enable and start `nginx` service
+      | [text](https://www.redhat.com/sysadmin/getting-started-systemctl)(*)
+   * Use the following commands to configure Amazon Linux 2 OS firewall to allow ingress `http` traffic
+     * `sudo firewall-cmd --zone=public --add-service=http --permanent`
+     * `sudo firewall-cmd --reload`
+   * If it is required use the following commands to configure Amazon Linux 2 OS firewall to allow ingress traffic on specific `<port>/<protocol>` (for example `8080/tcp`)
+     * `sudo firewall-cmd --zone=public --add-port=<port>/<protocol> --permanent`
+     * `sudo firewall-cmd --reload`
+   * Allow `http` traffic to access `nginx` service running on TCP port `80`
+     | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/connect-http-https-ec2/)
+     * Use AWS Console
+     * Configure the security group of the EC2 instance to allow `http` traffic by adding an inbound rule on TCP port `80` from the source address `0.0.0.0/0`
+       | [text](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+       | [video](https://www.youtube.com/watch?v=UQLWYy-EpCg)  
 * **What we have as a result (to check/validate)**
   * Ability to execute commands remotely (via SSH) in shell of the instance created in the previous section 
-</details> 
-Start the EC2 instance stopped in the previous section and connect to it via SSH as default user
- | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)
+</details>
+  
+Stop the EC2 instance
 <details><summary>Show details</summary>
 
 * **Details**
-  * To start instance use AWS Console
+  * Use AWS Console
 * **What we have as a result (to check/validate)**
-  * Ability to execute commands remotely (via SSH) in shell of the instance created in the previous section 
+  * Linux EC2 instance in **Stopped** state in AWS account in `eu-central-1` region
 </details> 
+  
+Start the EC2 instance stopped in the previous section and access it via SSH
+<details><summary>Show details</summary>
 
+* **Details**
+  * See the previous section
+* **What we have as a result (to check/validate)**
+  * See the previous section
+</details>   
+    
+Start the EC2 instance stopped in the previous section and access it via SSH
+  | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)
+  | [video](https://www.youtube.com/watch?v=khPGZYh73fo)
+<details><summary>Show details</summary>
 
+* **Details**
+  * Use the following Linux OS user settings
+    | adduser(8)
+    * Username: `tutor-a`
+    * Public key: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIChvBKAJbIt0H0O26DbZnu2I0kHG+OJBEvR0UkgqWwFb tutor-a`
+  * Provide user `tutor-a` with instance administrative privileges via `sudo`
+    | [text](https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel)
+    * Add user `tutor-a` to the group: `wheel`
+      | usermod(8)
+    * Use `visudo` command (which safely edits `/etc/sudoers` file with `vi` editor) to enable all users in group `wheel` to run any command with `sudo` **without a password**
+      | visudo(8)
+* **What we have as a result (to check/validate)**
+  * User `tutor-a` has SSH access to the Linux EC2 instance (using its private key) with instance administrative privileges via `sudo`
+</details>   
+  
+Stop the EC2 instance
+<details><summary>Show details</summary>
 
+* **Details**
+  * See the previous section
+* **What we have as a result (to check/validate)**
+  * **Stopped** Linux EC2 instance in `eu-central-1` region configured according to the following
+    * Amazon Linux 2 OS installed
+    * SSH daemon configured according to best practices
+    * Web server `nginx` installed and accessible via `http` on TCP port `80`
+    * User `tutor-a` created and provided SSH access (using its private key) with instance administrative privileges via `sudo`  
+</details>   
+  
+Create custom EC2 key pair using Amazon EC2
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)(Console)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Use AWS Console
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following EC2 key pair settings
+    * Key pair name: `student-rsa`
+    * Key pair type: `RSA`
+    * Private key file format: `.pem`
+  * Save downloaded private key file (`student-rsa.pem`) as `~/.ssh/id_student_rsa` (in local Linux/MacOS workplace) and make appropriate permission changes
+* **What we have as a result (to check/validate)**
+  * EC2 key pair `student-rsa` in `eu-central-1` region, private key file `~/.ssh/id_student_rsa`
+</details>   
+  
+Create custom EC2 key pair using Amazon EC2
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)(AWS CLI)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Use AWS CLI
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following EC2 key pair settings
+    * Key pair name: `student-ed25519`
+    * Key pair type: `ED25519`
+    * Private key file format: `.pem`
+  * Save private key file as `~/.ssh/id_student_ed25519` (in local Linux/MacOS workplace) and make appropriate permission changes
+* **What we have as a result (to check/validate)**
+  * EC2 key pair `student-ed25519` in `eu-central-1` region, private key file `~/.ssh/id_student_ed25519`
+</details>   
+  
+Create custom EC2 security group
+  | [text](Create custom EC2 security group)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Use AWS Console
+    | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html)(New console) 
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following security group settings
+    * Security group name: `public-ssh-and-http`
+    * Description: `Allow SSH and HTTP access from the World`
+    * VPC: use `default` VPC (the only VPC ID available at this stage)
+    * Allow ingress `http` traffic on TCP port `80` from the source address `0.0.0.0/0`	
+      | [text](https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel)(New console) 
+    * Allow ingress `ssh` traffic on TCP port `22` from the source address `0.0.0.0/0`
+    * Allow all egress traffic to the destination address `0.0.0.0/0`     
+* **What we have as a result (to check/validate)**
+  * EC2 security group `public-ssh-and-http in eu-central-1` region allowing SSH and HTTP access from the World
+</details>   
+  
+Create custom EC2 security group
+<details><summary>Show details</summary>
+
+* **Details**
+  * Use AWS CLI
+    | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html)(Command line) 
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following security group settings
+    * Security group name: `public-ssh-http-81`
+    * Description: `Allow SSH, HTTP and 81/TCP access from the World`
+    * VPC: use `default` VPC (the only VPC ID available at this stage)
+    * Allow ingress `http` traffic on TCP port 80 from the source address `0.0.0.0/0`
+      | [text](https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel)(Command line) 
+    * Allow ingress traffic on TCP port `81` from the source address `0.0.0.0/0`  
+    * Allow ingress `ssh` traffic on TCP port `22` from the source address `0.0.0.0/0`
+    * Allow all egress traffic to the destination address `0.0.0.0/0`       
+* **What we have as a result (to check/validate)**
+  * EC2 security group `public-ssh-http-81`  in `eu-central-1` region allowing SSH, HTTP, and TCP on port `81` access from the World
+</details>   
+   
+Create Ubuntu EC2 Instance with custom EC2 security group and EC2 key pair
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Use AWS Console 
+  * Use any of the created IAM admin users
+  * Use AWS Region: `Europe (Frankfurt) eu-central-1`
+  * Use the following EC2 instance settings (all set as default with the exception of the specified)
+    | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/launching-instance.html)
+    * Amazon Machine Image: `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`(Free tier eligible)
+    * Instance type: `t2.micro` (Free tier eligible)
+    * Instance tag key-value: `Name: ubuntu-console`
+    * Security group name: `public-ssh-and-http`
+    * **Choose an existing key pair** as wizard prompted
+      * Select a key pair: `student-rsa|RSA` 
+* **What we have as a result (to check/validate)**
+  * **Running** Ubuntu EC2 instance (`ubuntu-console`) in `eu-central-1` region
+</details>   
+  
+Connect to the created instance via SSH using **default user**
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * Ability to execute commands in shell of the created instance remotely via SSH
+</details>   
+  
+Configure SSH daemon of the created instance to be more secure 
+  | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/ec2-ssh-best-practices/)(*)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Make sure that SSH access for Linux `root` user is prohibited
+  * Make sure that SSH access using passwords is prohibited
+  * Make sure that SSH access using passwords is prohibited
+* **What we have as a result (to check/validate)**
+  * SSH daemon is configured according to best practices
+</details>   
+  
+Install `nginx` web server and set up a basic website (custom static page) over `http` on TCP port `81` — according to the referenced [tutorial](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview)(*)
+  | [text](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview)
+<details><summary>Show details</summary>
+
+* **Details**
+  * Make sure both default `nginx` welcome page (*Welcome to nginx*) and basic website (*Hello, Nginx!*) are accessible from all over the world  
+* **What we have as a result (to check/validate)**
+  * http request to TCP port 80 to public IP address or DNS name of the EC2 instance returns default nginx welcome page of Ubuntu AMI (*Welcome to nginx!*); http request to TCP port 81 to public IP address or DNS name of the EC2 instance returns custom static page (*Hello, Nginx!*)
+</details>   
+  
+Add OS user to the Linux instance and provide it with SSH access (using its private key) with instance administrative privileges via `sudo`  
+  | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)(*)
+<details><summary>Show details</summary>
+ 
+* **Details**
+  * Use the following Linux OS user settings
+    | [adduser(8)](http://manpages.ubuntu.com/manpages/trusty/man8/adduser.8.html) 
+    * Username: `tutor-a`
+    * Public key: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIChvBKAJbIt0H0O26DbZnu2I0kHG+OJBEvR0UkgqWwFb tutor-a`
+  * Provide user `tutor-a` with instance administrative privileges via `sudo`
+    | [text](https://www.digitalocean.com/community/tutorials/how-to-edit-the-sudoers-file)(add) 
+    * Add user `tutor-a` to the group: `sudo`
+    * Use `visudo` command to enable all users in group `sudo` to run **any command as any user or member of any group** with `sudo` **without a password**
+* **What we have as a result (to check/validate)**
+  * User `tutor-a` has SSH access to the Linux EC2 instance (using its private key); user `tutor-a` is a member of  `sudo` group; members of group `sudo` can run any command as any user or member of any group with `sudo` without a password
+</details>  
+  
+Stop the created EC2 instance
+<details><summary>Show details</summary>
+ 
+* **What we have as a result (to check/validate)**
+  * **Stopped** Linux EC2 instance in `eu-central-1` region configured according to the following
+    * Ubuntu Server 20.04 LTS OS installed
+    * SSH daemon configured according to best practices
+    * Web server `nginx` installed and accessible via `http` on TCP ports `80` and `81`
+    * Members of the group `sudo` can run any command as any user or member of any group with `sudo` without a password
+    * User `tutor-a` created and provided SSH access (using its private key) with instance administrative privileges via the group `sudo` membership  
+</details>   
+  
+Start (just before the check) the created above (and now stopped) Amazon Linux 2 and Ubuntu instances and provide their public **IP addresses** (or DNS names) 
+  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
+<details><summary>Show details</summary>
+ 
+* **What we have as a result (to check/validate)**
+  * **Checkpoint**(01): please, **stop here** to check the results of your work before moving on
+</details>  
+  
+  
+  
+  
+  
