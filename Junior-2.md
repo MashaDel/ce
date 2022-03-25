@@ -120,4 +120,26 @@ Stop the created instance
   * Use AWS Console
 * **What we have as a result (to check/validate)**
   * Linux EC2 instance in **Stopped** state in AWS account in `eu-central-1` region
-</details>
+</details> 
+
+Start the EC2 instance stopped in the previous section and connect to it via SSH as **default user**
+ | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)
+<details><summary>Show details</summary>
+
+* **Details**
+  * To start instance use AWS Console
+* **What we have as a result (to check/validate)**
+  * Ability to execute commands remotely (via SSH) in shell of the instance created in the previous section 
+</details> 
+Start the EC2 instance stopped in the previous section and connect to it via SSH as default user
+ | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)
+<details><summary>Show details</summary>
+
+* **Details**
+  * To start instance use AWS Console
+* **What we have as a result (to check/validate)**
+  * Ability to execute commands remotely (via SSH) in shell of the instance created in the previous section 
+</details> 
+
+
+
