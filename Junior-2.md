@@ -24,6 +24,8 @@ Create first Linux EC2 Instance
   * **Running** Amazon Linux 2 EC2 instance (created within AWS account) in `eu-central-1` region, SSH RSA private key (downloaded) 
 </details>
 
+---
+### Exercise 2
 Connect to the created Linux EC2 instance using SSH
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)<details><summary>Show details</summary>
 
@@ -39,6 +41,8 @@ Connect to the created Linux EC2 instance using SSH
   * SSH session (to the created EC2 instance) established (with the ability to execute commands remotely)
 </details>
 
+---
+### Exercise 3
 Transfer a file from the created Linux EC2 instance to local Linux/MacOS host using SCP
 <details><summary>Show details</summary>
 
@@ -52,6 +56,8 @@ Transfer a file from the created Linux EC2 instance to local Linux/MacOS host us
   * ~/.ssh/ssh_host_ecdsa_key.pub file presence (on the filesystem of local Linux/MacOS host) 
 </details>
 
+---
+### Exercise 4
 Clean up (terminate) the created instance
 <details><summary>Show details</summary>
 
@@ -60,7 +66,7 @@ Clean up (terminate) the created instance
 </details>  
 
 ---
-### Exercise 2
+### Exercise 5
 Repeat the part of the above exercise creating a Linux EC2 Instance and connecting to it via SSH
 <details><summary>Show details</summary>
 
@@ -70,6 +76,8 @@ Repeat the part of the above exercise creating a Linux EC2 Instance and connecti
   * Ability to execute commands in shell of the created instance remotely via SSH
 </details>
 
+---
+### Exercise 6
 Configure SSH daemon of the created Linux EC2 Instance (remotely via SSH) to be more secure 
   | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/ec2-ssh-best-practices/)
 <details><summary>Show details</summary>
@@ -112,6 +120,8 @@ Configure SSH daemon of the created Linux EC2 Instance (remotely via SSH) to be 
   * SSH daemon is configured according to best practices for keeping Linux instance secure
 </details>
 
+---
+### Exercise 7
 Stop the created instance
  | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)
 <details><summary>Show details</summary>
@@ -122,6 +132,8 @@ Stop the created instance
   * Linux EC2 instance in **Stopped** state in AWS account in `eu-central-1` region
 </details> 
 
+---
+### Exercise 8
 Start the EC2 instance stopped in the previous section and connect to it via SSH as **default user**
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html)(*)
 <details><summary>Show details</summary>
@@ -156,7 +168,9 @@ Start the EC2 instance stopped in the previous section and connect to it via SSH
 * **What we have as a result (to check/validate)**
   * Ability to execute commands remotely (via SSH) in shell of the instance created in the previous section 
 </details>
-  
+
+---
+### Exercise 9
 Stop the EC2 instance
 <details><summary>Show details</summary>
 
@@ -165,7 +179,9 @@ Stop the EC2 instance
 * **What we have as a result (to check/validate)**
   * Linux EC2 instance in **Stopped** state in AWS account in `eu-central-1` region
 </details> 
-  
+ 
+---
+### Exercise 10
 Start the EC2 instance stopped in the previous section and access it via SSH
 <details><summary>Show details</summary>
 
@@ -174,7 +190,9 @@ Start the EC2 instance stopped in the previous section and access it via SSH
 * **What we have as a result (to check/validate)**
   * See the previous section
 </details>   
-    
+  
+---
+### Exercise 11    
 Start the EC2 instance stopped in the previous section and access it via SSH
   | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)
   | [video](https://www.youtube.com/watch?v=khPGZYh73fo)
@@ -193,8 +211,10 @@ Start the EC2 instance stopped in the previous section and access it via SSH
       | visudo(8)
 * **What we have as a result (to check/validate)**
   * User `tutor-a` has SSH access to the Linux EC2 instance (using its private key) with instance administrative privileges via `sudo`
-</details>   
+</details>  
   
+---
+### Exercise 12  
 Stop the EC2 instance
 <details><summary>Show details</summary>
 
@@ -208,6 +228,8 @@ Stop the EC2 instance
     * User `tutor-a` created and provided SSH access (using its private key) with instance administrative privileges via `sudo`  
 </details>   
   
+---
+### Exercise 13  
 Create custom EC2 key pair using Amazon EC2
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)(Console)
 <details><summary>Show details</summary>
@@ -224,7 +246,9 @@ Create custom EC2 key pair using Amazon EC2
 * **What we have as a result (to check/validate)**
   * EC2 key pair `student-rsa` in `eu-central-1` region, private key file `~/.ssh/id_student_rsa`
 </details>   
-  
+ 
+---
+### Exercise 14  
 Create custom EC2 key pair using Amazon EC2
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)(AWS CLI)
 <details><summary>Show details</summary>
@@ -242,6 +266,8 @@ Create custom EC2 key pair using Amazon EC2
   * EC2 key pair `student-ed25519` in `eu-central-1` region, private key file `~/.ssh/id_student_ed25519`
 </details>   
   
+---
+### Exercise 15  
 Create custom EC2 security group
   | [text](Create custom EC2 security group)
 <details><summary>Show details</summary>
@@ -263,6 +289,8 @@ Create custom EC2 security group
   * EC2 security group `public-ssh-and-http in eu-central-1` region allowing SSH and HTTP access from the World
 </details>   
   
+---
+### Exercise 16  
 Create custom EC2 security group
 <details><summary>Show details</summary>
 
@@ -282,8 +310,10 @@ Create custom EC2 security group
     * Allow all egress traffic to the destination address `0.0.0.0/0`       
 * **What we have as a result (to check/validate)**
   * EC2 security group `public-ssh-http-81`  in `eu-central-1` region allowing SSH, HTTP, and TCP on port `81` access from the World
-</details>   
-   
+</details>  
+  
+---
+### Exercise 17   
 Create Ubuntu EC2 Instance with custom EC2 security group and EC2 key pair
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)
 <details><summary>Show details</summary>
@@ -303,7 +333,9 @@ Create Ubuntu EC2 Instance with custom EC2 security group and EC2 key pair
 * **What we have as a result (to check/validate)**
   * **Running** Ubuntu EC2 instance (`ubuntu-console`) in `eu-central-1` region
 </details>   
-  
+
+---
+### Exercise 18  
 Connect to the created instance via SSH using **default user**
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
 <details><summary>Show details</summary>
@@ -312,6 +344,8 @@ Connect to the created instance via SSH using **default user**
   * Ability to execute commands in shell of the created instance remotely via SSH
 </details>   
   
+---
+### Exercise 19  
 Configure SSH daemon of the created instance to be more secure 
   | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/ec2-ssh-best-practices/)(*)
 <details><summary>Show details</summary>
@@ -323,7 +357,9 @@ Configure SSH daemon of the created instance to be more secure
 * **What we have as a result (to check/validate)**
   * SSH daemon is configured according to best practices
 </details>   
-  
+ 
+---
+### Exercise 20   
 Install `nginx` web server and set up a basic website (custom static page) over `http` on TCP port `81` — according to the referenced [tutorial](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview)(*)
   | [text](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview)
 <details><summary>Show details</summary>
@@ -333,7 +369,9 @@ Install `nginx` web server and set up a basic website (custom static page) over 
 * **What we have as a result (to check/validate)**
   * http request to TCP port 80 to public IP address or DNS name of the EC2 instance returns default nginx welcome page of Ubuntu AMI (*Welcome to nginx!*); http request to TCP port 81 to public IP address or DNS name of the EC2 instance returns custom static page (*Hello, Nginx!*)
 </details>   
-  
+ 
+---
+### Exercise 21   
 Add OS user to the Linux instance and provide it with SSH access (using its private key) with instance administrative privileges via `sudo`  
   | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/new-user-accounts-linux-instance/)(*)
 <details><summary>Show details</summary>
@@ -350,7 +388,9 @@ Add OS user to the Linux instance and provide it with SSH access (using its priv
 * **What we have as a result (to check/validate)**
   * User `tutor-a` has SSH access to the Linux EC2 instance (using its private key); user `tutor-a` is a member of  `sudo` group; members of group `sudo` can run any command as any user or member of any group with `sudo` without a password
 </details>  
-  
+ 
+---
+### Exercise 22   
 Stop the created EC2 instance
 <details><summary>Show details</summary>
  
@@ -362,7 +402,9 @@ Stop the created EC2 instance
     * Members of the group `sudo` can run any command as any user or member of any group with `sudo` without a password
     * User `tutor-a` created and provided SSH access (using its private key) with instance administrative privileges via the group `sudo` membership  
 </details>   
-  
+ 
+---
+### Exercise 23   
 Start (just before the check) the created above (and now stopped) Amazon Linux 2 and Ubuntu instances and provide their public **IP addresses** (or DNS names) 
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
 <details><summary>Show details</summary>
@@ -370,14 +412,18 @@ Start (just before the check) the created above (and now stopped) Amazon Linux 2
 * **What we have as a result (to check/validate)**
   * **Checkpoint**(01): please, **stop here** to check the results of your work before moving on
 </details>  
-  
+ 
+---
+### Exercise 24   
 Terminate the created above Amazon Linux 2 and Ubuntu instances
 <details><summary>Show details</summary>
   
 * **What we have as a result (to check/validate)**
   * No instances exist in AWS account (all the instances previously created are terminated)
 </details>  
-  
+ 
+---
+### Exercise 25   
 Сreate Ubuntu EC2 instance repeating the steps in the previous section, but using **AWS CLI**
 <details><summary>Show details</summary>
  
@@ -412,7 +458,9 @@ Terminate the created above Amazon Linux 2 and Ubuntu instances
 * **What we have as a result (to check/validate)**
   * **Running** Ubuntu EC2 instance (`ubuntu-cli`) in `eu-central-1` region
 </details>    
-
+ 
+---
+### Exercise 26 
 Stop the created EC2 instance
 <details><summary>Show details</summary>
      
@@ -424,7 +472,9 @@ Stop the created EC2 instance
 * **What we have as a result (to check/validate)**
   * **Stopped** Ubuntu EC2 instance (`ubuntu-cli`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 27   
 Create (one more) Ubuntu EC2 instance repeating the steps in the previous section, but using **User data**
 <details><summary>Show details</summary>
      
@@ -442,7 +492,9 @@ Create (one more) Ubuntu EC2 instance repeating the steps in the previous sectio
 * **What we have as a result (to check/validate)**
   * **Running** Ubuntu EC2 instance (`ubuntu-ud1`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 28   
 Stop the created EC2 instance
 <details><summary>Show details</summary>
      
@@ -452,7 +504,9 @@ Stop the created EC2 instance
 * **What we have as a result (to check/validate)**
   * **Stopped** Ubuntu EC2 instance (`ubuntu-ud1`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 29   
 Start (just before the check) both the created above (and now stopped) Ubuntu instances (`ubuntu-cli, ubuntu-ud1`) and provide their public IP addresses (or DNS names) 
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html)(*)
 <details><summary>Show details</summary>
@@ -460,7 +514,9 @@ Start (just before the check) both the created above (and now stopped) Ubuntu in
 * **What we have as a result (to check/validate)**
   * **Checkpoint** (02): please, **stop here** to check the results of your work before moving on
 </details>  
-  
+ 
+---
+### Exercise 30   
 Terminate both the created above Ubuntu instances (`ubuntu-cli, ubuntu-ud1`)
   | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/terminate-instances.html)
 <details><summary>Show details</summary>
@@ -470,7 +526,9 @@ Terminate both the created above Ubuntu instances (`ubuntu-cli, ubuntu-ud1`)
 * **What we have as a result (to check/validate)**
   * No instances exist in AWS account (all the instances previously created are terminated)
 </details>  
-  
+ 
+---
+### Exercise 31   
 Create IAM role and EC2 **instance profile** to grant applications running on the instance (which will be created below) full access permissions to Amazon S3 service (within AWS account)
   | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
 <details><summary>Show details</summary>
@@ -489,7 +547,9 @@ Create IAM role and EC2 **instance profile** to grant applications running on th
 * **What we have as a result (to check/validate)**
   * Instance profile `EC2toS3FullAccessProfile` with the corresponding permissions
 </details>  
-  
+ 
+---
+### Exercise 32   
 Create S3 bucket
   | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html)
 <details><summary>Show details</summary>
@@ -508,7 +568,9 @@ Create S3 bucket
 * **What we have as a result (to check/validate)**
   * S3 bucket with the name: `s3://cec-<AWS account ID>-j2`
 </details>  
-  
+ 
+---
+### Exercise 33   
 Put the **launch script** used as **User data** in the previous section into the created bucket
   | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/uploading-an-object-bucket.html)
 <details><summary>Show details</summary>
@@ -521,7 +583,9 @@ Put the **launch script** used as **User data** in the previous section into the
 * **What we have as a result (to check/validate)**
   * File on S3 bucket: `s3://cec-<AWS account ID>-j2/user-data/<ubuntu launch script>`
 </details>  
-  
+ 
+---
+### Exercise 34  
 Create Ubuntu EC2 instance repeating the steps in the previous section using AWS CLI, but with the following modifications
 <details><summary>Show details</summary>
   
@@ -541,7 +605,9 @@ Create Ubuntu EC2 instance repeating the steps in the previous section using AWS
 * **What we have as a result (to check/validate)**
   * **Running** Ubuntu EC2 instance (`ubuntu-ud2`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 35   
 Stop the created EC2 instance
 <details><summary>Show details</summary>
   
@@ -550,14 +616,18 @@ Stop the created EC2 instance
 * **What we have as a result (to check/validate)**
   * **Stopped** Ubuntu EC2 instance (`ubuntu-ud2`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 36   
 Create **launch script** similar to the one created for Ubuntu in the previous section but for Amazon Linux 2 and put it to the same bucket/folder as in the previous section 
 <details><summary>Show details</summary>
   
 * **What we have as a result (to check/validate)**
   * File on S3 bucket: `s3://cec-<AWS account ID>-j2/user-data/<al2 launch script>`
 </details>  
-  
+ 
+---
+### Exercise 37   
 Create Amazon Linux 2 EC2 instance repeating the steps in the previous section for Ubuntu using AWS CLI, but with the following modifications
 <details><summary>Show details</summary>]
   
@@ -570,7 +640,9 @@ Create Amazon Linux 2 EC2 instance repeating the steps in the previous section f
 * **What we have as a result (to check/validate)**
   * **Running** Amazon Linux 2 EC2 instance (`al2-ud2`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 38   
 Stop the created EC2 instance
 <details><summary>Show details</summary>]
   
@@ -579,14 +651,18 @@ Stop the created EC2 instance
 * **What we have as a result (to check/validate)**
   * **Stopped** Amazon Linux 2 EC2 instance (`al2-ud2`) in `eu-central-1` region
 </details>  
-  
+ 
+---
+### Exercise 39   
 Start (just before the check) both the created above (and now stopped) Ubuntu and Amazon Linux 2 instances (`ubuntu-ud2, al2-ud2`) and provide their public IP addresses (or DNS names) 
 <details><summary>Show details</summary>]
   
 * **What we have as a result (to check/validate)**
   * **Checkpoint** (03): please, **stop here** to check the results of your work before moving on
 </details>  
-  
+ 
+---
+### Exercise 40   
 Terminate both the created above Ubuntu instances (`al2-ud2, ubuntu-ud2`)
   | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/terminate-instances.html)(*)
 <details><summary>Show details</summary>]
@@ -596,7 +672,9 @@ Terminate both the created above Ubuntu instances (`al2-ud2, ubuntu-ud2`)
 * **What we have as a result (to check/validate)**
   * No instances exist in AWS account (all the instances previously created are terminated)
 </details>  
-  
+ 
+---
+### Exercise 41   
 Create local shell script create.sh which creates two EC2 instances repeating the steps in the previous sections, but with the following modifications
 <details><summary>Show details</summary>]
   
