@@ -989,6 +989,29 @@ Change the last version of local shell script create.sh (created above in this c
   * Shell script `create.sh` and corresponding OS-dependent launch scripts modified according to the requirements
 </details>  
   
+---
+### Exercise 58   
+Use modified `create.sh` script to create Ubuntu and Amazon Linux 2 instances (`ubuntu-ud6, al2-ud6`). Perform these steps just before the check (instance FQDN's will be used to access them)
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (06): please, stop here to check the following results of your work before moving on
+  * Two EC2 instances, one of Ubuntu Server 20.04 LTS (`ubuntu-ud6.<AccountID>.cirruscloud.click`) and second one of Amazon Linux 2 (`al2-ud6.<AccountID>.cirruscloud.click`) with the following differencies related the **checkpoint (05)**
+    * Configured with required permissions via **instance profile**
+    * **Tagged** with required key-value tags
+    * OS `hostnames` set according to their FQDN formed by instance's `Name` tag and corresponding domain name
+    * Accessible via instances FQDN after OS restart
+</details>  
+  
+---
+### Exercise 59   
+Use created `delete.sh` script (created above in this course) to terminate both the created above Linux instances (`al2-ud6, ubuntu-ud6`)
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
+  
   
   
   
