@@ -875,19 +875,119 @@ Use created `delete.sh` script (created above in this course) to terminate both 
   
 * **Details**
   * *A brief introduction to the exercise purpose*
-  
-  
-  
-  * Use any available hostnames in the chosen domain, like e.g. `ubuntu-ud5-abc` and `al2-ud5-def`
-* **What we have as a result (to check/validate)**
-  * Two **DNS Hostnames** in `noip.com` service
-</details>  
-  
+  * Every time any on-demand EC2 instance is started, AWS infrastructure assigns the instance a dynamic public IP address. In such a configuration the instance IP address changes every time when restart occurs
+  * One way to access the created instance using its dynamic public IP address is to register the IP address as DNS records of type 'A' for particular domain name in the corresponding DNS zone (using, for example, instance launch script upon every instance restart)
+  * Amazon Route 53 is managed DNS service used to register domain names and host DNS zones within AWS
+  * Domain name registration and DNS zone hosting are not covered by the AWS Free Tier
+  * Due to the above fact the exercise assumes using separate dedicated AWS account for these purposes
+    | [text](https://gavinlewis.medium.com/managing-route-53-in-a-multi-account-environment-5d95a3cb67c5)
+  * The following configuration components are used in this exercise
+    * ID of AWS account to register domain name and host all the necessary DNS zones
+      * 272304640086
+    * The registered domain name
+      * cirruscloud.click
+    * Student's managed DNS zone in the registered domain name (where `<AccountID>` is ID of student AWS account )
+      * <AccountID>.cirruscloud.click
+  * In the mentioned `272304640086` AWS account all necessary Roles and Policies are created to provide student accounts access to create/update resourse records in their corresponding DNS zones hosted in this (272304640086) account
+    * For the folowing **actions related to public hosted DNS zones** of `272304640086` AWS account the permissions are provided (for corresponding student accounts)
+      | [text](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/r53-api-permissions-ref.html)
+      * route53:GetHostedZone
+      * route53:ListHostedZones
+  * For the folowing **actions related to resource records in the hosted DNS zones dedicated for particular students** in `272304640086` AWS account the permissions are provided (for corresponding student accounts) 
+    | [text](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/r53-api-permissions-ref.html)
+    * route53:ChangeResourceRecordSets
+    * route53:GetChange
+    * route53:ListResourceRecordSets
+    * route53:ListHostedZonesByName
 * **What we have as a result (to check/validate)**
   * No instances exist in AWS account (all the instances previously created are terminated)
 </details>  
   
+---
+### Exercise 54   
+Create IAM customer managed policy which allows student account to assume cross-account role with corresponding permissions (to be able to create/update resource records in the appropriate DNS zone)
+  | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create-cli.html)
+  | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-policy.html)  
+<details><summary>Show details</summary>]
   
+* **Details**
+  * Policy name
+    * CloudEngJ2Ch06CrossAccount
+  * Cross-account ID
+    * 272304640086
+  * Cross-account role name (dedicated roles for each student account are created in `272304640086` account)
+    * `CloudEngJ2Ch06UpdateDNSZone<AccountID>`
+      * where `<AccountID>` is ID of student AWS account
+* **What we have as a result (to check/validate)**
+  * IAM customer managed policy CloudEngJ2Ch06CrossAccount with the corresponding content
+</details>  
+  
+---
+### Exercise 55   
+Create IAM role which allows: read only access to all EC2 instances, read only access to all S3 buckets, assuming mentioned above cross-account role
+  | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html)(*)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-role.html)(*)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/attach-role-policy.html)(*)
+  * Use the following settings 
+    * Role name: `CloudEngJ2Ch06Role`
+    * Role description: `Allows read only access to all EC2 instances and S3 buckets, assume Update DNS Zone role in 272304640086 Account`
+    * Includes the following **AWS managed and customer managed** policies
+      | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)(*)
+      | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)
+      * AmazonEC2ReadOnlyAccess
+      * `AmazonS3ReadOnlyAccess`
+      * `CloudEngJ2Ch06CrossAccount`
+* **What we have as a result (to check/validate)**
+  * IAM role `CloudEngJ2Ch06Role` with the corresponding permissions
+</details>  
+
+---
+### Exercise 56   
+Create EC2 instance profile for the created above IAM role
+  | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html)(*)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-instance-profile.html)(*)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/add-role-to-instance-profile.html)(*)
+  * Use the following settings 
+    * Instance profile name: `CloudEngJ2Ch06Profile`
+    * Role to store in the instance profile: `CloudEngJ2Ch06Role`
+* **What we have as a result (to check/validate)**
+  * Instance profile `CloudEngJ2Ch06Profile` containing the corresponding IAM role
+</details>  
+  
+---
+### Exercise 57   
+Change the last version of local shell script create.sh (created above in this course) and corresponding **OS-dependent launch scripts** to make the following modifications while creating EC2 instances
+<details><summary>Show details</summary>]
+  
+* **Details**`
+  * Both instances should use the created in the previous section instance profile: `CloudEngJ2Ch06Profile`
+  * Instances should have the following tags corresponding to their OS types
+    * 1-st instance
+      * Instance tag key-value: Name: `ubuntu-ud6`
+    * 2-nd instance
+      * Instance tag key-value: `Name: al2-ud6`
+  * Local `hostnames` of the instances shoud be set according to the following
+    * **Host part** of the `hostnames` should correspond to the value of the instance `Name` tag
+    * **Domain part** of the `hostnames` should correspond to the DNS zone dedicated for particular student in the registered domain name: `<AccountID>.cirruscloud.click`, where `<AccountID>` is ID of student AWS account
+  * The instance dynamic public IP addresses should be registered as DNS resource records of type 'A' in the corresponding DNS zone `(<AccountID>.cirruscloud.click)` with the record names set to **host part** of the instance `hostnames` above (FQDN)
+    * To create, delete, or change (upsert) a resource record set in a configured hosted zone it is possible to use `aws route53 change-resource-record-sets` command
+      | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/simple-resource-record-route53-cli/)
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html)
+    * To get ID for zones hosted in the AWS account it is possible to use `aws route53 list-hosted-zones` command
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/list-hosted-zones.html)
+    * To be able to use the above command in your accounts **(trusted account)** with resources in different account **(trusting account)** it is neccery to switch to the corresponding role in the **trusting account**. To do this in scripts or from command line it is possible to use `aws sts assume-role` command to get the appropriate role credentials and then use them for API calls. This approach is called **cross-account access**
+      | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html)
+* **What we have as a result (to check/validate)**
+  * Shell script `create.sh` and corresponding OS-dependent launch scripts modified according to the requirements
+</details>  
   
   
   
