@@ -703,11 +703,189 @@ Create local shell script create.sh which creates two EC2 instances repeating th
   * Shell script `create.sh`
 </details>  
   
+---
+### Exercise 42   
+Create local shell script `list.sh` which lists all running EC2 instances tagged with key-value: `Type: cec` providing the following information for each instance
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Instance ID
+  * Instance public IP
+  * Instance OS type
+* **What we have as a result (to check/validate)**
+  * Shell script `list.sh`
+</details>  
+   
+---
+### Exercise 43   
+Create local shell script `delete.sh` which deletes all running EC2 instances taggeted with key-value: `Type: cec`
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * Shell script `delete.sh`
+</details>  
+  
+---
+### Exercise 44   
+Use created `create.sh` script to create Ubuntu and Amazon Linux 2 instances (`ubuntu-ud3, al2-ud3`). Use created `list.sh` script to determine and provide public IP addresses of the created instances. Perform these steps just before the check.
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (04): please, **stop here** to check the following results of your work before moving on
+  * Two EC2 instances, one of Ubuntu Server 20.04 LTS (`ubuntu-ud3`) and second one of Amazon Linux 2 (`al2-ud3`)
+    * Installed with **latest versions** of AMI for the corresponding OS'es
+    * Configured with corresponding **instance profile** used for both instances
+    * **Tagged** with corresponding key-value tags
+    * Configured with corresponding **user data** launch scripts downloaded from the specified S3 bucket
+</details>  
+  
+---
+### Exercise 45   
+Use created `delete.sh` script to terminate both the created above Linux instances (`al2-ud3, ubuntu-ud3`)
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
+  
+---
+### Exercise 46   
+Create IAM role which provides read only access to all EC2 instances and all S3 buckets using **AWS managed policies**
+  | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-role.html)(*)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/attach-role-policy.html)
+  * Use the following settings 
+    * Role name: `CloudEngJ2Ch05Role`
+    * Role description: `Provides read only access to all EC2 instances and S3 buckets`
+    * Includes the following **AWS managed policies**
+      | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)
+      * AmazonEC2ReadOnlyAccess
+      * AmazonS3ReadOnlyAccess
+* **What we have as a result (to check/validate)**
+  * IAM role `CloudEngJ2Ch05Role` with the corresponding permissions
+</details>  
+  
+---
+### Exercise 47   
+Create EC2 instance profile for the created above IAM role
+  | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/create-instance-profile.html)(*)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/iam/add-role-to-instance-profile.html)(*)
+  * Use the following settings 
+    * Instance profile name: `CloudEngJ2Ch05Profile`
+    * Role to store in the instance profile: `CloudEngJ2Ch05Role`
+* **What we have as a result (to check/validate)**
+  * Instance profile `CloudEngJ2Ch05Profile` containing the corresponding IAM role
+</details>  
+  
+---
+### Exercise 48   
+Enable versioning of the bucket created earlier in this course
+  | [text](https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use AWS CLI
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/put-bucket-versioning.html)
+  * Bucket name: `cec-<AWS account ID>-j2`
+    * Use the following command to find out `<AWS account ID>`
+      * aws sts get-caller-identity --query Account --output text
+* **What we have as a result (to check/validate)**
+  * S3 bucket `cec-<AWS account ID>-j2` versioning enabled
+</details>  
+  
+---
+### Exercise 49   
+Sign up with free account of `noip.com` — dynamic DNS service provider
+  | [text](https://www.noip.com/free)
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * Free account of `noip.com` service
+</details>  
+  
+---
+### Exercise 50   
+Create two public **DNS Host names** (`No-IP Hostnames`) with `noip` service: one for Ubuntu instance and one for Amazon Linux instance
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Use any available domain name, like e.g. `ddns.net`
+  * Use any available hostnames in the chosen domain, like e.g. `ubuntu-ud5-abc` and `al2-ud5-def`
+* **What we have as a result (to check/validate)**
+  * Two **DNS Hostnames** in `noip.com` service
+</details>  
+  
+---
+### Exercise 51   
+Change the last version of local shell script `create.sh`(created above in this course) and corresponding **OS-dependent launch scripts** to make the following modifications while creating EC2 instances
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * Both instances should use the created in the previous section instance profile: `CloudEngJ2Ch05Profile`
+  * Instances should have the following tags corresponding to their OS types
+    * 1-st instance
+      * Instance tag key-value: `Name: ubuntu-ud5`
+    * 2-nd instance
+      * Instance tag key-value: `Name: al2-ud5`
+  * Local `hostnames` of the instances shoud be set to the value of their `Name` tag in some exemplary domain, like e.g. `example.com`
+    * To fulfill this requirement, initialization procedure can do the following
+      * Get the `instance ID` from the **instance metadata**
+        | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+        | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-categories.html)
+      * For the given `instance ID` get the value of the instance tag `Name` using `aws ec2 describe-instances` command
+        | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-instances.html)
+      * Set the instance `hostname` to `<name>.example.com` (using for example `hostnamectl set-hostname` command)
+        | [text](https://man7.org/linux/man-pages/man1/hostnamectl.1.html)
+        | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-hostname.html)
+   * noip **Dynamic Update Client** should be installed and configured as a systemd service to perform dynamic DNS update the created noip.com service **DNS Hostnames** with public IP addresses of the instances
+     | [text](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dynamic-dns.html)
+     | [text](https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client-on-ubuntu/)
+     * Use local shell script `list.sh` (created above in this course) to validate that instance IP addresses correspond to the IP addresses of the No-IP **DNS Hostnames**
+* **What we have as a result (to check/validate)**
+  * Shell script `create.sh` and corresponding OS-dependent launch scripts modified according to the requirements
+</details>  
+   
+---
+### Exercise 52   
+Use modified `create.sh` script to create Ubuntu and Amazon Linux 2 instances (`ubuntu-ud5, al2-ud5`). Perform these steps just before the check. Provide instances' public DNS hostnames created in `noip.com` service.
+<details><summary>Show details</summary>]
+  
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (05): please, **stop here** to check the following results of your work before moving on
+  * Two EC2 instances, one of Ubuntu Server 20.04 LTS (`ubuntu-ud5`) and second one of Amazon Linux 2 (`al2-ud5`) with the following differencies related the **checkpoint** (04)
+    * Configured with required permissions via **instance profile**
+    * **Tagged** with required key-value tags
+    * OS `hostnames` taken from the instance's `Name` tag
+    * noip service installed and configured to update the created **DNS Hostnames** of noip.com service with instance public IPs
+</details>  
+  
+---
+### Exercise 53   
+Use created `delete.sh` script (created above in this course) to terminate both the created above Linux instances (`al2-ud5, ubuntu-ud5`)
+<details><summary>Show details</summary>]
+  
+* **Details**
+  * *A brief introduction to the exercise purpose*
   
   
   
+  * Use any available hostnames in the chosen domain, like e.g. `ubuntu-ud5-abc` and `al2-ud5-def`
+* **What we have as a result (to check/validate)**
+  * Two **DNS Hostnames** in `noip.com` service
+</details>  
   
-  
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>  
   
   
   
