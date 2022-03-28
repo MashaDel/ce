@@ -1183,8 +1183,24 @@ Use modified `create.sh` script to create two EC2 instances according to the fol
   * Amazon Linux 2 instance (`al2-ud8`) in `eu-east-2` region
 * Perform these steps just before the check  
 * **What we have as a result (to check/validate)**
-  * ResultDescription
+  * **Checkpoint** (08): please, **stop here** to check the following results of your work before moving on
+  * Two EC2 instances: Ubuntu Server 20.04 LTS (`ubuntu-ud8.<AccountID>.cirruscloud.click`) in `eu-east-1` region and Amazon Linux 2 (`al2-ud8.<AccountID>.cirruscloud.click`) in `eu-east-2` region with the following differencies related the **checkpoint** (07)
+    * **Tagged** with required key-value tags
+    * Created in the specified **regions**
+    * Public IP addresses of both instances are registered for the same domain name — `ha.<AccountID>.cirruscloud.click`
+    * **Readiness service** installed and configured according to the requirements
+    * nginx web server configured to serve **readiness probes**
 </details>
+  
+---
+### Exercise 70
+Use created `delete.sh` script (created above in this course) to terminate both the created above Linux instances (`al2-ud8, ubuntu-ud8`)
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>
+  
   
   
   
