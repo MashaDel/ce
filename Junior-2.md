@@ -874,7 +874,7 @@ Use created `delete.sh` script (created above in this course) to terminate both 
 <details><summary>Show details</summary>]
   
 * **Details**
-  * *A brief introduction to the exercise purpose*
+* *A brief introduction to the exercise purpose*
   * Every time any on-demand EC2 instance is started, AWS infrastructure assigns the instance a dynamic public IP address. In such a configuration the instance IP address changes every time when restart occurs
   * One way to access the created instance using its dynamic public IP address is to register the IP address as DNS records of type 'A' for particular domain name in the corresponding DNS zone (using, for example, instance launch script upon every instance restart)
   * Amazon Route 53 is managed DNS service used to register domain names and host DNS zones within AWS
@@ -1012,7 +1012,179 @@ Use created `delete.sh` script (created above in this course) to terminate both 
   * No instances exist in AWS account (all the instances previously created are terminated)
 </details>  
   
+---
+### Exercise 60
+Сreate a local file named `regions-allowed.conf` which will contain a list of AWS regions where it is allowed to deploy infrastructure, and should be used to limit all the used scripts to work with only the specified regions 
+<details><summary>Show details</summary>
   
+* **Details**
+  * Сreate a local file named `regions-allowed.conf` which will contain a list of AWS regions where it is allowed to deploy infrastructure, and should be used to limit all the used scripts to work with only the specified regions 
+    * Use the command `aws ec2 describe-regions` ... to find out and filter corresponding regions
+      | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-regions.html)
+* **What we have as a result (to check/validate)**
+  * Local file `regions-allowed.conf` with list of allowed AWS regions — each region value on a new line
+</details>
+  
+---
+### Exercise 61
+Create local **infrastructure script** (named `infra.sh`) which should ensure that every AWS region from `regions-allowed.conf` is ready for infrastructure deployments according to requirements (for example it should be ready for creation EC2 instances by current and future versions of the `create.sh` script)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * The following are the requirements to be fulfilled
+    * for all the corresponding regions there are default VPC and default subnets (in each region availability zone)
+      | [text](https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html)
+    * required EC2 security groups exist in the default VPC of all the corresponding regions
+    * required EC2 key pairs exist in all the corresponding regions 
+  * The script should be idempotent (reenterable) — the script should check if the required component exists and create it only if it is not present (not re-create existing components)
+    | [text](https://en.wikipedia.org/wiki/Idempotence)
+    | [text](https://ru.wikipedia.org/wiki/Идемпотентность)(ru)  
+* **What we have as a result (to check/validate)**
+  * Shell script `infra.sh`
+</details>
+  
+---
+### Exercise 62
+Use the create `infra.sh` script to create all the necessary components in regions specified in `regions-allowed.conf` file
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * For all `opt-in-not-required` regions there are default VPC and default subnets (in each region availability zone)
+  * EC2 key pair `student-rsa` exists in all `opt-in-not-required` regions (corresponding to the private key in the local file `~/.ssh/id_student_rsa)`
+  * EC2 key pair `student-ed25519` exists in all `opt-in-not-required` regions (corresponding to the private key in the local file `~/.ssh/id_student_ed25519)`
+  * EC2 security group `public-ssh-and-http` exists in all `opt-in-not-required` regions allowing SSH and HTTP access from the World (in the region default VPC)
+  * EC2 security group `public-ssh-http-81` exists in all `opt-in-not-required` regions allowing SSH, HTTP, and TCP on port `81` access from the World (in the region default VPC)
+</details>
+  
+---
+### Exercise 63
+Change the last version of local shell script `create.sh` (created above in this course) and corresponding **OS-dependent launch scripts** to make the following modifications while creating EC2 instances
+<details><summary>Show details</summary>
+  
+* **Details**
+  * create.sh script should take two arguments with help of the following flags
+    * --region flag: specifies region where the EC2 instance should be created
+      * --region flag: specifies region where the EC2 instance should be created
+      * if the value is not from the list in the `regions-allowed.conf` file, the script should exit without instance creation providing a complaint message
+    * --os flag: specifies OS type of the created instance
+      * **possible values** for this argument are from the following list
+        *   `al2` — for the last AWS AMI version of `Amazon Linux 2` OS
+        *   `ubuntu` — for the last AWS AMI version of `Ubuntu 20.04` OS
+        * if the value is not from the above list, the script should exit without instance creation providing a complaint message
+      * create.sh script should create **one** EC2 instance of the specified OS type in the specified region (according to **possible values** of the corresponding arguments) with the following modifications according to its last version (created previously in this course)
+        * The instances should have the following tag corresponding to its OS type (where `<OSType>` is the value of `--os` argument, e.g. `ubuntu-ud7` for Ubuntu 20.04)
+          * Instance tag key-value: `Name: <OSType>-ud7`
+        * Note that the instance shoud additionally be tagged with key-value: `Type: cec`
+        * Note that the instance should use the same instance profile as was used for the checkpoint (06): `CloudEngJ2Ch06Profile` 
+* **What we have as a result (to check/validate)**
+  * Shell script `create.sh` and corresponding OS-dependent launch scripts modified according to the requirements
+</details>
+  
+---
+### Exercise 64
+Modify local shell scripts `list.sh` and `delete.sh` which should list and delete all running EC2 instances tagged with key-value: `Type: cec` in all the regions specified in the file `regions-allowed.conf`
+<details><summary>Show details</summary>
+  
+* **What we have as a result (to check/validate)**
+  * Shell scripts `list.sh` and `delete.sh` modified according to the requirements
+</details>
+  
+---
+### Exercise 65
+Use modified `create.sh` script to create two EC2 instances according to the following requirements in any different AWS regions specified in `regions-allowed.conf` file (`eu-west-1` and `eu-west-2` regions are used in the requirements as examples)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Ubuntu 20.04 instance (`ubuntu-ud7`) in `eu-west-1` region, using the following command
+    * ./create.sh --region eu-west-1 --os ubuntu
+  * Amazon Linux 2 instance (`al2-ud7`) in `eu-west-2` region, using the following command
+    * ./create.sh --region eu-west-2 --os al2
+  * Perform these steps just before the check  
+* **What we have as a result (to check/validate)**
+  * **Checkpoint** (07): please, **stop here** to check the following results of your work before moving on
+  * Two EC2 instances: Ubuntu Server 20.04 LTS (`ubuntu-ud7.<AccountID>.cirruscloud.click`) in `eu-west-1` region and Amazon Linux 2 (`al2-ud7.<AccountID>.cirruscloud.click`) in `eu-west-2` region with the following differencies related the **checkpoint** (06)
+    * **Tagged** with required key-value tags
+    * Created in the specified **regions**  
+</details>
+  
+---
+### Exercise 66
+Use created `delete.sh` script (created above in this course) to terminate both the created above Linux instances (`al2-ud7, ubuntu-ud7`)
+<details><summary>Show details</summary>
+  
+* **Details**
+* *A brief introduction to the exercise purpose*
+  * According to the current requirements (specified in the section corresponding to Checkpoint 06) the created instances register their IP addresses as DNS records of type 'A' for particular domain name in the corresponding DNS zone on every instance restart
+  * Having such a method we can get a configuration where more than one instance register their IP addresses in the same domain name — a possible way of providing high ailability and/or load balancing for a certain service located on these instances (via round-robin DNS)
+    | [text](https://en.wikipedia.org/wiki/Round-robin_DNS)
+  * To use such an approach it is also necessary to ensure that old (stale) IP addresses are removed as corresponding instances are no more available, - an instance could restart (and get new IP) or die for any reasons
+  * To remove stale IP addresses the following techniques can be used
+    * A shutdown script removing instance IP address from DNS zone as instance restarts or shuts down
+    * A readiness service running on live instances (participating in certain HA service), monitoring an availability of certain services via their corresponding IP addresses, and removing the IP addresses from DNS zones for the services which are not available
+  * Feasible ways to have **multiple IP addresses for one domain name** in Amazon Route 53 zones is to use one of the following routing policies
+    * **Simple routing** policy — it is possible to specify multiple values in the same record, such as multiple IP addresses
+      | [text](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html)
+    * **Multivalue answer routing** policy — it is possible to specify multiple values for a record
+      | [text](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html)
+      * Please don't use optional health check feature of Route 53 service for now, we will discuss this feature further
+    * In the subsequent exercise use the following **domain name for registering multiple IP addresses** of the created instances in student's managed DNS zone (where `<AccountID>` is ID of student AWS account)
+      * ha.<AccountID>.cirruscloud.click
+* **What we have as a result (to check/validate)**
+  * No instances exist in AWS account (all the instances previously created are terminated)
+</details>
+  
+---
+### Exercise 67
+Change the last version of local shell script `create.sh` (created above in this course) and corresponding **OS-dependent launch scripts** to make the following modifications while creating EC2 instances
+<details><summary>Show details</summary>
+  
+* **Details**
+  * On an instance start the instance dynamic public IP address should be registered in the corresponding DNS zone with the resource record used for **multiple IP addresses for one domain name** with name of `ha.<AccountID>.cirruscloud.click`
+  * On an instance restart/shutdown the instance IP address registered on instance startup in the DNS zone (resource records of `ha.<AccountID>.cirruscloud.click`) should be removed from DNS
+    | [text](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files)
+  * nginx web server to be configured to respond with HTTP response status code
+200 on the following path (where ServerIP is instance dynamic public IP address registered in the DNS zone on startup with resource records of ha.<AccountID>.cirruscloud.click) 
+    * http://ServerIP:80/healthz
+  * **Readiness service** should be installed and configured as a `systemd` service to perform readiness monitoring according to the following logic
+    * Every server ready to participate in serving some application traffic should appropriately answer to the **readiness probe** — respond with HTTP response status code `200` on the following path (where `ServerIP` is server public IP)  
+    * http://ServerIP:80/healthz 
+    * **Readiness service** checks that all servers, which registered their IP addresses in corresponding DNS zone (resource records of `ha.<AccountID>.cirruscloud.click`), answer to the **readiness probe** appropriately
+    * **Readiness service** runs **readiness probe** in period of `<periodSeconds>` seconds (default 600)
+    * **Readiness probe** should have timeout of `<timeout>` seconds (default 10) — if response is not returned during this time, the probe considered as failed
+    * If **readiness probe** is failed it should be repeated in `<retrySeconds>` seconds (default 20)
+    * If **readiness probe** has failed for `<failureThreshold>` times sequentially (default 3) corresponding server is considered as **not ready**
+    * If a server becomes **not ready** its IP should be removed by **readiness service** from the DNS zone (resource records of `ha.<AccountID>.cirruscloud.click)`
+  * To add/remove IP addresses to/from DNS zone resource records choose **routing policy** most suitable for the task
+    | [text](https://aws.amazon.com/ru/premiumsupport/knowledge-center/multivalue-versus-simple-policies/)
+    | [text](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53/change-resource-record-sets.html)(*)
+  * Note that the following configurations should be fulfilled according to the previous requirements
+    * The script should create an instance in a region and of OS type specified by corresponding command line arguments
+    * The created instance should use the same instance profile as was used for the checkpoint (06): `CloudEngJ2Ch06Profile`
+    * The created instance should be tagged accordingly to their OS type with the following tag key-value:
+      * Name: <OSType>-ud8
+    * The created instance shoud also be tagged with key-value: `Type: cec`
+    * The created instance local hostname should be set accordingly
+      * **Host part** of the `hostname` should correspond to the value of the instance `Name` tag
+      * **Domain part** of the `hostname` should correspond to the DNS zone dedicated for particular student in the registered domain name: `<AccountID>.cirruscloud.click`, where `<AccountID>` is ID of student AWS account
+    * The created instance dynamic public IP address should also be registered as DNS resource records of type 'A' in the corresponding DNS zone (`<AccountID>.cirruscloud.click`) with the record name set to **host part** of the instance `hostnames` above (FQDN)
+  * Also remember that to be able to change resource records in account of `cirruscloud.click` DNS zone (**trusting** account with ID of `272304640086`) from your (**trusted**) accounts, it is necessary to switch to the corresponding role in the **trusting** account, the same way it was done in the previous section
+    | [text](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html)(*)
+* **What we have as a result (to check/validate)**
+  * Shell script `create.sh` and corresponding OS-dependent launch scripts modified according to the requirements
+</details>
+  
+---
+### Exercise 68
+Use modified `create.sh` script to create two EC2 instances according to the following requirements in any different AWS regions allowed by the corresponding configuration file (`us-east-1` and `us-east-2` regions are used here as examples)
+<details><summary>Show details</summary>
+  
+* **Details**
+  * Ubuntu 20.04 instance (`ubuntu-ud8`) in `eu-east-1` region
+  * Amazon Linux 2 instance (`al2-ud8`) in `eu-east-2` region
+* Perform these steps just before the check  
+* **What we have as a result (to check/validate)**
+  * ResultDescription
+</details>
   
   
   
